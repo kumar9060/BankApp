@@ -1,6 +1,6 @@
 # 🏦 Bank Security Application
 
-This is a full-stack Spring Boot-based banking application that provides secure RESTful APIs for managing user accounts, cards, investments, and admin functionalities. It integrates JWT-based authentication, role-based access control, and follows a modular structure separating concerns across controllers, services, repositories, DTOs, and security layers.
+This is a Spring Boot-based backend banking application that provides secure RESTful APIs for managing user accounts, cards, investments, and admin functionalities. It integrates JWT-based authentication, role-based access control, and follows a modular structure separating concerns across controllers, services, repositories, DTOs, and security layers.
 
 ---
 
@@ -64,4 +64,4 @@ Pull requests are welcome. For major changes, please open an issue first.
 
 ## 📧 Contact
 
-Made with ❤️ by [Vikas Kumar](mailto:kumarvikaskv123@gmail.com)
+Made 💻 by [Vikas Kumar](mailto:kumarvikaskv123@gmail.com)
