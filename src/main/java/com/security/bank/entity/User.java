@@ -2,10 +2,13 @@ package com.security.bank.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+
 import java.util.*;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 
 @Entity
@@ -29,7 +32,7 @@ public class User implements UserDetails {
 
     private String identityProof;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne //(cascade = CascadeType.ALL)
     private Role roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
