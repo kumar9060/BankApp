@@ -12,6 +12,11 @@ This is a Spring Boot-based backend banking application that provides secure RES
 - 💳 Card Services
 - 📈 Investment Tracking
 - 🧼 DTO & Layered Architecture
+- 🆕 Bootstrap Default Admin User on Startup
+- 🔍 Get User by ID  
+  - Admin can view users of all roles except other admins  
+  - Customers can only view their own details
+
 
 ---
 
@@ -28,6 +33,7 @@ com.security.bank
 ├── investments
 ├── jwt
 ├── repository
+├── Root
 ├── security
 ├── service
 ├── user
