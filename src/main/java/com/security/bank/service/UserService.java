@@ -3,6 +3,7 @@ package com.security.bank.service;
 import com.security.bank.dto.AdminDto;
 import com.security.bank.dto.UserDto;
 import com.security.bank.entity.*;
+import com.security.bank.jwt.JwtAuthenticationHelper;
 import com.security.bank.repository.AccountRepository;
 import com.security.bank.repository.RoleRepository;
 import com.security.bank.repository.UserRepository;
@@ -13,9 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.springframework.security.access.AccessDeniedException;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -30,6 +34,9 @@ public class UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private JwtAuthenticationHelper authenticationHelper;
 
 
     public void registerUser(UserDto userDto) {
@@ -72,12 +79,32 @@ public class UserService {
         userRepository.save(saveUser);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers(String username) {
+        List<User> userList = userRepository.findAll();
+
+        return userList.stream().filter(user -> {
+                    Role role = user.getRoles(); //Single roles
+                    boolean isAdmin = role != null && "ROLE_ADMIN".equals(role.getRoleName());
+                    return !isAdmin || user.getUsername().equals(username);
+                })
+                .collect(Collectors.toList());
     }
 
     public User getUserByName(String username) {
-        return userRepository.findByUsername(username).get();
+        User user = userRepository.findByUsername(username).orElseThrow(()->
+                new RuntimeException("User Not Found" + username));
+
+        String currentUserName = authenticationHelper.getCurrentUserName();
+        boolean isUserName = user.getRoles() != null && "ROLE_ADMIN"
+                .equals(user.getRoles().getRoleName());
+
+        if(isUserName && !user.getUsername().equals(currentUserName)){
+            throw new AccessDeniedException("You are not allowed to access another admin's data");
+        }
+
+        return user;
+
+//        return userRepository.findByUsername(username).get();
     }
 
     public String deleteUserById(Long userId) {
@@ -146,7 +173,7 @@ public class UserService {
 
         if (isAdmin) {
             boolean isAnotherAdmin = requestedUser.getRoles().getRoleName().equals("ROLE_ADMIN");
-            if(isAnotherAdmin && !requestedUser.getUsername().equals(username)){
+            if (isAnotherAdmin && !requestedUser.getUsername().equals(username)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin can't see another admin data");
             }
             return requestedUser;

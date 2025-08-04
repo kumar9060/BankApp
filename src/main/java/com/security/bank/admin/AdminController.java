@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -30,8 +31,8 @@ public class AdminController {
     @GetMapping("/getAllUser")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getAllUser() {
-        return adminUserService.getAllUsers();
+    public List<User> getAllUser(Principal principal) {
+        return adminUserService.getAllUsers(principal.getName());
     }
 
     @GetMapping("/getUserByName/{username}")
